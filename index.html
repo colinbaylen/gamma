@@ -1,53 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gamma</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            max-width: 600px;
-            text-align: center;
-        }
-        h1 {
-            color: #333;
-            margin: 0 0 10px 0;
-        }
-        p {
-            color: #666;
-            margin: 10px 0;
-        }
-        a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PGY-4 Schedule Planner 2026–2027</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f9f9f7; color: #1a1a18; padding: 2rem 1rem; }
+  .container { max-width: 700px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #888780; margin-bottom: 1.25rem; }
+  .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.25rem; }
+  .stat { background: #f1efe8; border-radius: 8px; padding: 10px 12px; }
+  .stat-label { font-size: 11px; color: #888780; margin-bottom: 2px; }
+  .stat-val { font-size: 20px; font-weight: 500; color: #1a1a18; }
+  .stat-sub { font-size: 11px; color: #888780; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 1.25rem; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #888780; }
+  .dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .month-group { margin-bottom: 1.25rem; }
+  .month-label { font-size: 11px; font-weight: 500; color: #b4b2a9; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .blocks-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .block { border-radius: 8px; padding: 10px 12px; cursor: pointer; transition: border-color 0.15s, opacity 0.15s; border: 0.5px solid #d3d1c7; background: #fff; user-select: none; }
+  .block:hover:not(.locked) { border-color: #b4b2a9; }
+  .block.locked { cursor: default; opacity: 0.55; }
+  .block.vac { background: #E1F5EE; border-color: #9FE1CB; }
+  .block.elec-a { background: #EEEDFE; border-color: #CECBF6; }
+  .block.elec-b { background: #E6F1FB; border-color: #B5D4F4; }
+  .block.elec-c { background: #FAEEDA; border-color: #FAC775; }
+  .block-id { font-size: 11px; color: #b4b2a9; margin-bottom: 2px; }
+  .block-dates { font-size: 11px; color: #888780; margin-bottom: 5px; }
+  .block-label { font-size: 13px; font-weight: 500; }
+  .block.vac .block-label { color: #0F6E56; }
+  .block.elec-a .block-label { color: #3C3489; }
+  .block.elec-b .block-label { color: #185FA5; }
+  .block.elec-c .block-label { color: #854F0B; }
+  .block .block-label.muted { color: #888780; font-weight: 400; }
+  .note { font-size: 10px; color: #b4b2a9; margin-top: 3px; }
+  .badge-conflict { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 4px; background: #F5C4B3; color: #993C1D; margin-top: 3px; }
+  .action-row { display: flex; gap: 8px; margin-top: 1.5rem; flex-wrap: wrap; }
+  button { font-size: 13px; padding: 7px 14px; border-radius: 8px; border: 0.5px solid #b4b2a9; background: #fff; color: #1a1a18; cursor: pointer; }
+  button:hover { background: #f1efe8; }
+  .hint { font-size: 12px; color: #b4b2a9; margin-top: 8px; }
+  @media (max-width: 480px) {
+    .summary { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 Gamma</h1>
-        <p>Welcome to your GitHub Pages site!</p>
-        <p>This is your gamma repository published to GitHub Pages.</p>
-        <p><a href="https://github.com/colinbaylen/gamma">View on GitHub</a></p>
-    </div>
+<div class="container">
+  <h1>PGY-4 schedule planner</h1>
+  <p class="subtitle">2026–2027 · 4 vacation weeks (2 blocks) + 6 elective weeks (3 blocks) = 10 weeks</p>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="dot" style="background:#1D9E75"></div>Vacation</div>
+    <div class="legend-item"><div class="dot" style="background:#7F77DD"></div>Elective A</div>
+    <div class="legend-item"><div class="dot" style="background:#378ADD"></div>Elective B</div>
+    <div class="legend-item"><div class="dot" style="background:#BA7517"></div>Elective C</div>
+    <div class="legend-item"><div class="dot" style="background:#D3D1C7"></div>Conflict/avoid</div>
+  </div>
+
+  <div id="calendar"></div>
+
+  <div class="action-row">
+    <button onclick="reset()">Reset all</button>
+    <button onclick="autoFill()">Auto-fill suggestion</button>
+  </div>
+  <p class="hint" id="hint">Click a block to cycle: Available → Vacation → Elective A → Elective B → Elective C → Available</p>
+</div>
+
+<script>
+const blocks = [
+  { id:"1A",  dates:"Jul 1–12",       month:"July 2026" },
+  { id:"1B",  dates:"Jul 13–26",      month:"July 2026" },
+  { id:"2A",  dates:"Jul 27–Aug 9",   month:"August 2026" },
+  { id:"2B",  dates:"Aug 10–23",      month:"August 2026" },
+  { id:"3A",  dates:"Aug 24–Sep 6",   month:"September 2026" },
+  { id:"3B",  dates:"Sep 7–20",       month:"September 2026", note:"Labor Day 9/7" },
+  { id:"4A",  dates:"Sep 21–Oct 4",   month:"October 2026" },
+  { id:"4B",  dates:"Oct 5–18",       month:"October 2026",  conflict:true, note:"ACEP Oct 5–8" },
+  { id:"5A",  dates:"Oct 19–Nov 1",   month:"November 2026" },
+  { id:"5B",  dates:"Nov 2–15",       month:"November 2026" },
+  { id:"6A",  dates:"Nov 16–29",      month:"November 2026", note:"Thanksgiving 11/26" },
+  { id:"6B",  dates:"Nov 30–Dec 13",  month:"December 2026" },
+  { id:"7A",  dates:"Dec 14–27",      month:"December 2026", note:"Christmas 12/25" },
+  { id:"7B",  dates:"Dec 28–Jan 10",  month:"January 2027",  note:"New Year's 1/1" },
+  { id:"8A",  dates:"Jan 11–24",      month:"January 2027" },
+  { id:"8B",  dates:"Jan 25–Feb 7",   month:"February 2027" },
+  { id:"9A",  dates:"Feb 8–21",       month:"February 2027" },
+  { id:"9B",  dates:"Feb 22–Mar 7",   month:"February 2027", conflict:true, note:"In-Training Exam Feb 25" },
+  { id:"10A", dates:"Mar 8–21",       month:"March 2027" },
+  { id:"10B", dates:"Mar 22–Apr 4",   month:"March 2027" },
+  { id:"11A", dates:"Apr 5–18",       month:"April 2027",    note:"CORD Apr 17–21" },
+  { id:"11B", dates:"Apr 19–May 2",   month:"April 2027",    note:"CORD Apr 17–21" },
+  { id:"12A", dates:"May 3–16",       month:"May 2027" },
+  { id:"12B", dates:"May 17–30",      month:"May 2027",      note:"SAEM May 18–21" },
+  { id:"13A", dates:"May 31–Jun 13",  month:"June 2027" },
+  { id:"13B", dates:"Jun 14–30",      month:"June 2027" },
+];
+
+const STATES = ["available","vac","elec-a","elec-b","elec-c"];
+const LABELS = { available:"Available", vac:"Vacation", "elec-a":"Elective A", "elec-b":"Elective B", "elec-c":"Elective C" };
+const MAX = { vac:2, "elec-a":2, "elec-b":2, "elec-c":2 };
+
+let assign = {};
+blocks.forEach(b => assign[b.id] = "available");
+
+function count(state) { return blocks.filter(b => assign[b.id] === state).length; }
+function countVacWeeks() { return count("vac"); }
+function countElecWeeks() { return count("elec-a") + count("elec-b") + count("elec-c"); }
+
+function nextState(blockId) {
+  const cur = assign[blockId];
+  const idx = STATES.indexOf(cur);
+  for (let i = 1; i < STATES.length; i++) {
+    const next = STATES[(idx + i) % STATES.length];
+    if (next === "available") return "available";
+    if (count(next) < MAX[next]) return next;
+  }
+  return "available";
+}
+
+function render() {
+  const cal = document.getElementById("calendar");
+  const months = [...new Set(blocks.map(b => b.month))];
+  cal.innerHTML = "";
+
+  months.forEach(month => {
+    const mBlocks = blocks.filter(b => b.month === month);
+    const group = document.createElement("div");
+    group.className = "month-group";
+    group.innerHTML = `<div class="month-label">${month}</div>`;
+    const row = document.createElement("div");
+    row.className = "blocks-row";
+
+    mBlocks.forEach(b => {
+      const a = assign[b.id];
+      const isConflict = b.conflict && a === "available";
+      const div = document.createElement("div");
+      div.className = isConflict ? "block locked" : (a === "available" ? "block" : "block " + a);
+
+      const labelClass = a === "available" ? "block-label muted" : "block-label";
+      const labelText = isConflict ? "Avoid" : LABELS[a];
+
+      div.innerHTML = `
+        <div class="block-id">Block ${b.id}</div>
+        <div class="block-dates">${b.dates}</div>
+        <div class="${labelClass}">${labelText}</div>
+        ${b.conflict ? `<span class="badge-conflict">${b.note}</span>` : (b.note ? `<div class="note">${b.note}</div>` : "")}
+      `;
+
+      if (!b.conflict) {
+        div.onclick = () => { assign[b.id] = nextState(b.id); render(); };
+      }
+
+      row.appendChild(div);
+    });
+
+    group.appendChild(row);
+    cal.appendChild(group);
+  });
+
+  const vc = countVacWeeks();
+  const ec = countElecWeeks();
+  const total = vc + ec;
+  const remaining = 10 - total;
+  document.getElementById("summary").innerHTML = `
+    <div class="stat"><div class="stat-label">Vacation weeks</div><div class="stat-val">${vc}</div><div class="stat-sub">of 4 (${count("vac")} blocks)</div></div>
+    <div class="stat"><div class="stat-label">Elective weeks</div><div class="stat-val">${ec}</div><div class="stat-sub">of 6 (${ec/2} blocks)</div></div>
+    <div class="stat"><div class="stat-label">Total assigned</div><div class="stat-val">${total}</div><div class="stat-sub">of 10 weeks</div></div>
+    <div class="stat"><div class="stat-label">Remaining</div><div class="stat-val">${remaining}</div><div class="stat-sub">week${remaining !== 1 ? "s" : ""} to place</div></div>
+  `;
+
+  const allFull = count("vac") >= 2 && count("elec-a") >= 2 && count("elec-b") >= 2 && count("elec-c") >= 2;
+  document.getElementById("hint").textContent = allFull
+    ? "All 10 weeks placed! Use Reset to start over or click any block to reassign."
+    : "Click a block to cycle: Available → Vacation → Elective A → Elective B → Elective C → Available";
+}
+
+function reset() {
+  blocks.forEach(b => assign[b.id] = "available");
+  render();
+}
+
+function autoFill() {
+  reset();
+  assign["7A"] = "vac";   assign["7B"] = "vac";
+  assign["1A"] = "vac";   assign["1B"] = "vac";
+  assign["3A"] = "elec-a"; assign["3B"] = "elec-a";
+  assign["6A"] = "elec-b"; assign["6B"] = "elec-b";
+  assign["10A"] = "elec-c"; assign["10B"] = "elec-c";
+  render();
+}
+
+render();
+</script>
 </body>
 </html>
